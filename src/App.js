@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
-
+import Options from './components/Options'
+import Table from'./components/Table'
+import {useEffect} from 'react'
+import './App.css'
+import { useState } from 'react';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const [pageUrl, setPageUrl] = useState('users')
+  const [items, setItems] = useState([])
+  const API_URL = 'https://jsonplaceholder.typicode.com'
+  useEffect(()=>{
+    const fetchData = async () =>{
+      try{
+      const response = await fetch(`${API_URL}/${pageUrl}`)
+      if(!response.ok){
+        throw Error('Could not load data')
+      }
+      const data = await response.json()
+      setItems(data)
+    }catch(err){
+       console.log(err.message)
+    }
+  }
+  (async()=> await fetchData())()
+  },[pageUrl])
+    return (
+    <div className='App'>
+    <Options pageUrl={pageUrl} setPageUrl={setPageUrl}/>
+    <Table items={items}/>
     </div>
   );
 }
